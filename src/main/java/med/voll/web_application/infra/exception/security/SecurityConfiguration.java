@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -27,11 +28,16 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/css/**", "/js/**", "/assets/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
+                .csrf(Customizer.withDefaults())
                 .formLogin(form -> form.loginPage("/login")
                         .defaultSuccessUrl("/", true).permitAll())
                 .logout(logout -> {
                     logout.logoutSuccessUrl("/login?logout").permitAll();
                 })
+                .rememberMe(rm ->
+                        rm.key("remember")
+                                .alwaysRemember(true)
+                )
                 .build();
     }
 
